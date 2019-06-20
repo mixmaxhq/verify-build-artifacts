@@ -1,0 +1,4 @@
+/bin/*.js
+/dist
+/node_modules
+*.sublime-workspace
