@@ -77,10 +77,15 @@ function handle(promise, { fail }) {
   );
 }
 
+function bail(message) {
+  console.error('groundskeeper:', message);
+  process.exit(1);
+}
+
 const interpretOptions = ({ bucket, region, prefix, _: files }) => ({
   storage: {
     options: {
-      bucket,
+      bucket: bucket || process.env.S3_BUCKET || bail('no S3 bucket specified'),
       region,
       prefix,
     },
@@ -99,13 +104,12 @@ yargs
   .options({
     fail: {
       type: 'boolean',
-      default: false,
+      default: true,
       describe: 'whether to output a failing exit code when build artifacts differ',
     },
     bucket: {
       type: 'string',
       describe: 'the S3 bucket for build artifact storage',
-      demandOption: true,
     },
     region: {
       type: 'string',
