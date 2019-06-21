@@ -83,7 +83,12 @@ export async function checkArtifacts(policy, context) {
         })
       );
 
+      // Track whether we've been interrupted to avoid infinite recursion on abort's error events.
+      let interrupted = false;
+
       function interrupt(err, ErrorType = Error) {
+        if (interrupted) return;
+        interrupted = true;
         reject(typeof err === 'string' ? new ErrorType(err) : err);
         source.unpipe(sink);
         source.destroy();
