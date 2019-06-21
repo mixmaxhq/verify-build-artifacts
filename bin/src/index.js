@@ -54,6 +54,7 @@ const complete = new Map(
     },
     push({ uri }) {
       console.log(`groundskeeper: uploaded ${uri}`);
+      process.exit();
     },
   })
 );
@@ -65,9 +66,10 @@ function handle(promise, { fail }) {
         const { action, ...rest } = output;
         complete.get(action)(rest, { fail });
       } else {
-        // TODO: respect fail flag
-        console.warn('groundskeeper: unable to determine travis context');
-        process.exit(fail ? 1 : 0);
+        if (process.env.CI) {
+          console.warn('groundskeeper: unable to determine travis context');
+        }
+        process.exit();
       }
     },
     (err) => {
