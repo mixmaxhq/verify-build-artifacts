@@ -13,8 +13,8 @@ function parseRange(range) {
   return match ? match.slice(1, 3) : null;
 }
 
-function formatComment({ patches, files }) {
-  const comment = ['groundskeeper: the following artifacts have changed:\n'];
+function formatComment({ patches, files }, { headCommit }) {
+  const comment = [`groundskeeper: the following artifacts have changed [${headCommit}]:\n`];
   if (patches) {
     comment.push('```patch');
     // Iterate over sorted files instead of the arbitrarily-ordered patches Map.
@@ -31,10 +31,10 @@ function formatComment({ patches, files }) {
 }
 
 export async function pull({ files, postNegative, postPositive, diff, mode, storage }) {
-  const [baseCommit = null] = parseRange(process.env.TRAVIS_COMMIT_RANGE) || [];
+  const [baseCommit = null, headCommit = null] = parseRange(process.env.TRAVIS_COMMIT_RANGE) || [];
   const baseBranch = process.env.TRAVIS_BRANCH;
-  if (!baseCommit) {
-    throw new Error('could not identify the base commit for pull request');
+  if (!baseCommit || !headCommit) {
+    throw new Error('could not interpret the commit range for the pull request');
   }
   if (!baseBranch) {
     throw new Error('could not identify the base branch for the pull request');
@@ -46,7 +46,7 @@ export async function pull({ files, postNegative, postPositive, diff, mode, stor
 
   if (result) {
     if (postPositive) {
-      await postComment('groundskeeper: no artifacts have changed', {
+      await postComment(`groundskeeper: no artifacts have changed [${headCommit}]`, {
         purpose: '@mixmaxhq/groundskeeper:report/artifacts',
       });
     }
@@ -54,7 +54,7 @@ export async function pull({ files, postNegative, postPositive, diff, mode, stor
   }
 
   if (postNegative) {
-    await postComment(formatComment(output), {
+    await postComment(formatComment(output, { baseBranch, baseCommit, headCommit }), {
       purpose: '@mixmaxhq/groundskeeper:report/artifacts',
     });
   }
