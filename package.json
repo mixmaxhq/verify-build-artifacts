@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/mixmaxhq/verify-build-artifacts#readme",
   "dependencies": {
-    "@mixmaxhq/post-github-comment-from-travis": "^0.1.0",
+    "@mixmaxhq/post-github-comment-from-travis": "^0.1.1",
     "@mixmaxhq/promise-pool": "^2.0.0",
     "aws-sdk": "^2.479.0",
     "diff": "^4.0.1",
