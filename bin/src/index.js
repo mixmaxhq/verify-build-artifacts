@@ -3,20 +3,20 @@ import { defaultCommand, pull, push } from '../dist/support';
 
 const alwaysValues = new Set(['any', 'all', 'always', 'every', 'yes']);
 const positiveValues = new Set([
-  'positive',
+  'equal',
   'match',
   'matched',
   'matching',
-  'equal',
+  'positive',
   'same',
   ...alwaysValues,
 ]);
 const negativeValues = new Set([
+  'differ',
+  'differing',
   'fail',
   'failing',
   'mismatched',
-  'differ',
-  'differing',
   'negative',
   ...alwaysValues,
 ]);
