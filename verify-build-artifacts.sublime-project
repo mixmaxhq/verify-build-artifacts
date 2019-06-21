@@ -6,6 +6,9 @@
       "node_modules"
     ],
     "file_exclude_patterns": [
+      // Generated script.
+      "bin/index.js",
+
       // Lock file.
       "package-lock.json"
     ]
